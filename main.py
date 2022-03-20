@@ -11,7 +11,7 @@ import plotly.graph_objs as go
 
 
 app = dash.Dash(__name__)
-server = app.server
+
 
 # Patrick
 df_merged_quality = pd.read_csv("Input/merged_data_cleaned.csv")

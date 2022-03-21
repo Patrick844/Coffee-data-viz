@@ -53,7 +53,9 @@ df_consumption = df_consumption[df_consumption["Market_Year"] == 2018]
 df_consumption = df_consumption[df_consumption["Attribute_Description"] == "Domestic Consumption"]
 df_consumption = df_consumption[df_consumption["Value"] > 2000]
 df_consumption = df_consumption.sort_values("Value", ascending=False)
-fig6 = px.bar(df_consumption, y="Value", x="Country_Name", color="Country_Name")
+fig6 = px.bar(df_consumption, y="Value", x="Country_Name", color="Value",
+              color_continuous_scale=px.colors.diverging.balance,
+                     color_continuous_midpoint=7000)
 fig6.update_xaxes(tickangle=90)
 # ------Exports
 df_exports = pd.read_csv("Input/exports-calendar-year.csv")
@@ -99,9 +101,7 @@ df['r'] = df['U Pop'] / df['Starbucks']
 df['Popularity'] = 20 + np.log(df['Starbucks'] / df['U Pop'])
 
 df1 = df[(df['U Pop'] > 1000000) & (df['Starbucks'] > 100) & (df['U'] > 49)]
-fig4 = px.scatter(df1, x='Popularity', y='Starbucks', color='U Pop',
-                  size='U', hover_name="Name",
-                  # color_continuous_scale=px.colors.sequential.YlOrBr,
+fig4 = px.scatter(df1, x='Popularity', y='Starbucks', color='U Pop', size='U', hover_name="Name",
                   title='Starbucks Popularity in big country')
 
 # Layout
@@ -116,7 +116,8 @@ df2 = df[(df['U'] > 0)]
 fig5 = px.choropleth(df2, locations="A3",
                      color="U",  # lifeExp is a column of gapminder
                      hover_name="Name",  # column to add to hover information
-                     color_continuous_scale=px.colors.sequential.Plasma)
+                     color_continuous_scale=px.colors.diverging.balance,
+                     color_continuous_midpoint=75)
 
 # ----Taste
 ind = np.arange(19, 31)
@@ -129,15 +130,16 @@ df_origin_arabica_taste_avg = df_origin_arabica_taste_avg.iloc[:, :-3]
 df_origin_arabica_taste_avg = df_origin_arabica_taste_avg.loc[["Brazil", "India", "Japan", "Vietnam"]]
 theta = ["Aroma", "Flavor", "Aftertase", "Acidity", "Sweetness"]
 
-###
+### Pic 8
 cpp = pd.read_csv("Input/coffeePriceParis.csv")
 cpp = cpp.groupby(["Arrondissement"]).mean()
-cpp['A'] = cpp.index
+cpp['Arrondissement'] = cpp.index
 
-figcpp = px.bar(cpp.sort_values(by=['Price']), x='Price', y='A')
+figcpp = px.bar(cpp.sort_values(by=['Price']), x='Price', y='Arrondissement',
+                title= 'Average Price of an Espresso in different Arrondissement')
 
 app.layout = html.Div(children=[
-
+### Pic 1
     html.Div([
         html.H2('Types of companies and number of companies that produce it around the world'),
         html.H3('''This chart is a small representation of the types coffee and in which country they are produce, \n
@@ -157,6 +159,8 @@ app.layout = html.Div(children=[
 
     ], style={'width': '48%', 'display': 'inline-block'}),
 
+### Pic 2
+
     html.Div([
         html.H2('''Coffee production'''),
         html.H3('''
@@ -166,6 +170,8 @@ app.layout = html.Div(children=[
         dcc.Graph(id='production_coffee',
                   figure=fig2)
     ]),
+
+### Pic 3
 
     html.H2('Exports of coffee per continent and country'),
     html.H3(''' As we saw in the previous chart, the country that produces the most coffee is Brazil and consequently, 
@@ -181,6 +187,9 @@ app.layout = html.Div(children=[
         value=["Asia"],
         inline=True
     ),
+
+### Pic 4
+
     html.Div([
         html.H2('''Coffee consumption around the world'''),
         html.H3('''After finding out which country produces the more coffee, 
@@ -192,6 +201,16 @@ app.layout = html.Div(children=[
         dcc.Graph(id='consumption_coffe',
                   figure=fig6)
     ]),
+
+###Pic 5
+    html.H4('''(This turn out show something interesting: The coffee consumption correlates to the Urbanization rate.
+        The more people live in city, the more coffee drinker
+        '''),
+    dcc.Graph(
+        id='The Urbanization Rate Map',
+        figure=fig5
+    ),
+
     html.Div([
         html.H2('''Taste of coffee in 4 different countries '''),
         html.H3('''We wanted to know what makes brazilian coffee so special, by comparing coffee taste on different 
@@ -219,12 +238,9 @@ app.layout = html.Div(children=[
         id='Figure 1',
         figure=fig4
     ),
-    dcc.Graph(
-        id='The Coffee Map',
-        figure=fig5
-    ),
 
-
+# Pic
+    html.H2("Ok, No Starbuck, let's go to Parisien Cafe!"),
     dcc.Graph(
         id='Price of Espresso in Paris',
         figure=figcpp
@@ -279,7 +295,7 @@ def update_line_chart(continents):
     Output('taste-graphic', 'figure'),
     Input('coffee_taste', 'value'))
 def update_graph(coffee_taste):
-    df_origin_arabica_taste_avg_ctry = df_origin_arabica_taste_avg[df_origin_arabica_taste_avg.index == coffee_taste]
+    df_origin_arabica_taste_avg_ctry = df_origin_arabica_taste_avg[df_origin_arabica_taste_avg.index == coffee_taste]-5
     fig = go.Figure(data=go.Scatterpolar(
         r=df_origin_arabica_taste_avg_ctry.loc[coffee_taste].tolist(),
         theta=theta,

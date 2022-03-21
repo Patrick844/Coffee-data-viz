@@ -300,6 +300,7 @@ def update_graph(coffee_taste):
         r=df_origin_arabica_taste_avg_ctry.loc[coffee_taste].tolist(),
         theta=theta,
         fill='toself'
+
     ))
     fig.update_layout(
         polar=dict(

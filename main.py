@@ -195,7 +195,7 @@ app.layout = html.Div(children=[
     html.Div([
         html.H2('''Taste of coffee in 4 different countries '''),
         html.H3('''We wanted to know what makes brazilian coffee so special, by comparing coffee taste on different 
-    criteria, overall the brazilian coffee is perfectly while maximizing everything that makes the coffee so good 
+    criteria, overall the brazilian coffee is perfectly balanced while maximizing everything that makes the coffee so good 
     '''),
         dcc.Dropdown(
             df_origin_arabica_taste_avg.index,

@@ -14,7 +14,7 @@ app = dash.Dash(__name__)
 server = app.server
 
 # Patrick
-df_merged_quality = pd.read_csv("../../DataViz coffee/datavizCoffee/Input/merged_data_cleaned.csv")
+df_merged_quality = pd.read_csv("Input/merged_data_cleaned.csv")
 df_merged_quality.rename(columns={"Unnamed: 0": "Id"}, inplace=True)
 df_merged_quality.set_index("Id", inplace=True)
 
@@ -41,14 +41,14 @@ df_origin_robusta_count = df_origin_robusta_count[["Number of Company", "Types"]
 df_ctry_origin_company_count = pd.concat([df_origin_arabica_count, df_origin_robusta_count])
 
 # ---- Production
-df_production_number = pd.read_csv("../../DataViz coffee/datavizCoffee/Input/total-production.csv")
+df_production_number = pd.read_csv("Input/total-production.csv")
 df_production_number_2018 = df_production_number[["total_production", "2018"]]
 df_production_number_2018 = df_production_number_2018.sort_values(by=["2018"], ascending=False)
 
 fig2 = px.bar(df_production_number_2018[:10], y="2018", x="total_production", color="total_production")
 fig2.update_xaxes(tickangle=90)
 
-df_consumption = pd.read_csv("../../DataViz coffee/datavizCoffee/Input/psd_coffee.csv")
+df_consumption = pd.read_csv("Input/psd_coffee.csv")
 df_consumption = df_consumption[df_consumption["Market_Year"] == 2018]
 df_consumption = df_consumption[df_consumption["Attribute_Description"] == "Domestic Consumption"]
 df_consumption = df_consumption[df_consumption["Value"] > 2000]
@@ -56,11 +56,11 @@ df_consumption = df_consumption.sort_values("Value", ascending=False)
 fig6 = px.bar(df_consumption, y="Value", x="Country_Name", color="Country_Name")
 fig6.update_xaxes(tickangle=90)
 # ------Exports
-df_exports = pd.read_csv("../../DataViz coffee/datavizCoffee/Input/exports-calendar-year.csv")
+df_exports = pd.read_csv("Input/exports-calendar-year.csv")
 df_exports.rename(columns={"exports": "country"}, inplace=True)
 
 df_exports = df_exports.melt("country")
-df_continents = pd.read_csv('../../DataViz coffee/datavizCoffee/Input/Continents.csv')
+df_continents = pd.read_csv('Input/Continents.csv')
 df_continents = df_continents[["Entity", "Continent"]]
 df_exports = df_exports.join(df_continents.set_index('Entity'), on='country')
 df_exports = df_exports.dropna()
@@ -70,17 +70,17 @@ list_year = list(df_exports.iloc[:, 1:-2].columns)
 df_exports = df_exports.rename(columns={"variable": "year", "value": "export"})
 df_exports = df_exports.sort_values(["country", "year"])
 # Import data
-data = pd.read_csv("../../DataViz coffee/datavizCoffee/Input/directory.csv")
+data = pd.read_csv("Input/directory.csv")
 
 Starbucks = data[data['Brand'] == 'Starbucks']['Country'].value_counts().to_frame()
 Starbucks['id'] = Starbucks.index
 
-isoCode = pd.read_csv("../../DataViz coffee/datavizCoffee/Input/countries_codes_and_coordinates.csv")
+isoCode = pd.read_csv("Input/countries_codes_and_coordinates.csv")
 
 Country = isoCode.merge(Starbucks, left_on='A2', right_on='id')
 Country = Country.rename(columns={"Country": "Starbucks"})
 
-pop = pd.read_csv("../../DataViz coffee/datavizCoffee/Input/population_by_country_2020.csv", delimiter=',')
+pop = pd.read_csv("Input/population_by_country_2020.csv", delimiter=',')
 
 df = pop.merge(Country, left_on='Country (or dependency)', right_on='Name')
 # Extract data
@@ -130,7 +130,7 @@ df_origin_arabica_taste_avg = df_origin_arabica_taste_avg.loc[["Brazil", "India"
 theta = ["Aroma", "Flavor", "Aftertase", "Acidity", "Sweetness"]
 
 ###
-cpp = pd.read_csv("../../DataViz coffee/datavizCoffee/Input/coffeePriceParis.csv")
+cpp = pd.read_csv("Input/coffeePriceParis.csv")
 cpp = cpp.groupby(["Arrondissement"]).mean()
 cpp['A'] = cpp.index
 
